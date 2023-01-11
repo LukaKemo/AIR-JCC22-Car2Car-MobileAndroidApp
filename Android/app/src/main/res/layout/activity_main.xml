@@ -11,6 +11,6 @@
         android:layout_height="match_parent"
         android:text="Hello World!"
         class="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/map_fragment"/>
+        android:id="@+id/mainMap"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
