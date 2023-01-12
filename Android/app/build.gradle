@@ -30,17 +30,28 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    packagingOptions {
+        pickFirst "META-INF/DEPENDENCIES"
+        exclude "META-INF/INDEX.LIST"
+        exclude "META-INF/io.netty.versions.properties"
+    }
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation 'com.google.maps.android:maps-ktx:3.1.0'
+    //google API
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    //google Maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    //MQTT protocol
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.4'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'com.hivemq:hivemq-mqtt-client:1.2.1'
+
 }
