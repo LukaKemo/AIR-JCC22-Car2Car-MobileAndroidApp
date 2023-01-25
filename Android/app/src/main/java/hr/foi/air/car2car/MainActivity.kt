@@ -3,6 +3,7 @@ package hr.foi.air.car2car
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_main)
 
         setupMap()
-
+        println("Test")
         initializationMQTT()
     }
 
@@ -88,23 +89,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             .password(UTF_8.encode(password))
             .applySimpleAuth()
             .send()
-        println("Connected successfully")
+        Log.d("mqtt","Connected successfully to client")
 
         // subscribe to the topic "my/test/topic"
         client.subscribeWith()
-            .topicFilter("LOCATION")
+            .topicFilter("LOCATION/#")
             .send()
 
-        // subscribe to the topic "my/test/topic"
-        client.subscribeWith()
-            .topicFilter("LOCATION")
-            .send()
+
         // set a callback that is called when a message is received (using the async API style)
         client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish ->
-            println("Received message: ${publish.topic} -> ${UTF_8.decode(publish.payload.get())}")
+            Log.d("MQTT received message", "Received message: ${publish.topic} -> ${UTF_8.decode(publish.payload.get())}")
 
             // disconnect the client after a message was received
-            client.disconnect()
+
         }
         // publish a message to the topic "my/test/topic"
         client.publishWith()
