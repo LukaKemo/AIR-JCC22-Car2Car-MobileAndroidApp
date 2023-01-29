@@ -1,5 +1,6 @@
 package hr.foi.air.car2car
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
@@ -34,8 +35,11 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         setupMap()
         initializationMQTT()
 
-        button = findViewById(R.id.round_button_notifications);
-
+        val button: Button = findViewById(R.id.round_button_notifications)
+        button.setOnClickListener {
+            val intent = Intent(this, NotificationActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupMap(){
