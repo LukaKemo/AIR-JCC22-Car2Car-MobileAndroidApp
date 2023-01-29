@@ -3,12 +3,15 @@ package hr.foi.air.car2car
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -16,21 +19,23 @@ import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import java.nio.charset.StandardCharsets.UTF_8
 
-
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //creating variable for mapFragment
     private lateinit var mapFragment : SupportMapFragment
     //private lateinit var googleMap : GoogleMap
     //private lateinit var client : MqttAndroidClient
+    var button: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_map)
 
         setupMap()
-        println("Test")
         initializationMQTT()
+
+        button = findViewById(R.id.round_button_notifications);
+
     }
 
     private fun setupMap(){
@@ -89,20 +94,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             .password(UTF_8.encode(password))
             .applySimpleAuth()
             .send()
-        Log.d("mqtt","Connected successfully to client")
+        println("Connected successfully")
 
         // subscribe to the topic "my/test/topic"
         client.subscribeWith()
-            .topicFilter("LOCATION/#")
+            .topicFilter("LOCATION")
             .send()
 
-
+        // subscribe to the topic "my/test/topic"
+        client.subscribeWith()
+            .topicFilter("LOCATION")
+            .send()
         // set a callback that is called when a message is received (using the async API style)
         client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish ->
-            Log.d("MQTT received message", "Received message: ${publish.topic} -> ${UTF_8.decode(publish.payload.get())}")
+            println("Received message: ${publish.topic} -> ${UTF_8.decode(publish.payload.get())}")
 
             // disconnect the client after a message was received
-
+            client.disconnect()
         }
         // publish a message to the topic "my/test/topic"
         client.publishWith()

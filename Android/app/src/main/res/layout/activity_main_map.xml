@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainMapActivity">
 
     <fragment
         android:layout_width="match_parent"
@@ -11,5 +11,16 @@
         android:text="Hello World!"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/mainMap"/>
+
+    <Button
+        android:id = "@+id/round_button_notifications"
+        android:textSize = "18sp"
+        android:textAlignment = "center"
+        android:background = "@drawable/round_button_notifications"
+        android:layout_width = "50dp"
+        android:layout_height = "50dp"
+        android:textColor = "@color/white"
+        android:text="@string/notifications"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
