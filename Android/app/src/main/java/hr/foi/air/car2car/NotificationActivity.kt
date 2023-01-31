@@ -30,7 +30,7 @@ class NotificationActivity : AppCompatActivity() {
                 val randomInt = Random.nextInt(0, 10)
                 data.add(
                     NotificationViewModel(
-                        R.drawable.ic_launcher_foreground,
+                        R.drawable.notifications_icon,
                         "Notification " + randomInt
                     )
                 )
