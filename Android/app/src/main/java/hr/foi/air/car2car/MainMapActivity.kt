@@ -4,7 +4,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -19,11 +21,22 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import java.nio.charset.StandardCharsets.UTF_8
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import fragments.MainMapFragment
+import fragments.NotificationsFragment
+import fragments.SettingsFragment
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //creating variable for mapFragment
     private lateinit var mapFragment : SupportMapFragment
+    //fragments
+    private val mainMapFragment = MainMapFragment()
+    private val settingsFragment = SettingsFragment()
+    private val notificationsFragment = NotificationsFragment()
+    private lateinit var bottomNav : BottomNavigationView
+
     //private lateinit var googleMap : GoogleMap
     //private lateinit var client : MqttAndroidClient
     var button: Button? = null
@@ -31,6 +44,17 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_map)
+        replaceFragment(mainMapFragment)
+        bottomNav = findViewById(R.id.bottomNav)
+
+        bottomNav.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.mainMap -> replaceFragment(mainMapFragment)
+                R.id.notifications -> replaceFragment(notificationsFragment)
+                R.id.settings -> replaceFragment(settingsFragment)
+            }
+            true
+        }
 
         setupMap()
         initializationMQTT()
@@ -39,6 +63,15 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         button.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    //bottom navBar
+    private  fun replaceFragment(fragment: Fragment){
+        if (fragment != null) {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, fragment)
+            transaction.commitNow()
         }
     }
 
