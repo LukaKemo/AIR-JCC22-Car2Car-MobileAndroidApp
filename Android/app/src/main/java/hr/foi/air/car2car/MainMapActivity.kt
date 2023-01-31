@@ -3,6 +3,7 @@ package hr.foi.air.car2car
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -22,53 +23,32 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import java.nio.charset.StandardCharsets.UTF_8
-import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.model.Marker
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import fragments.MainMapFragment
-import fragments.NotificationsFragment
-import fragments.SettingsFragment
 import hr.foi.air.car2car.MQTT.MqttConnectionImpl
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    //creating variable for mapFragment
-    private lateinit var mapFragment : SupportMapFragment
     private lateinit var appMap : GoogleMap
     var cars = HashMap<Int, Car>()
     private var markers = mutableListOf<Marker>()
     lateinit var mRefreshThread: RefreshThread
     private val mqttConnection = MqttConnectionImpl(cars)
     private val mapManager = MapHandler()
-    //fragments
-    private val mainMapFragment = MainMapFragment()
-    private val settingsFragment = SettingsFragment()
-    private val notificationsFragment = NotificationsFragment()
-    private lateinit var bottomNav : BottomNavigationView
-
-    //private lateinit var googleMap : GoogleMap
-    //private lateinit var client : MqttAndroidClient
-    var button: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_map)
         mqttConnection.connectToMqtt(cars)
         mapManager.setupMap(this)
-        replaceFragment(mainMapFragment)
-        bottomNav = findViewById(R.id.bottomNav)
 
-        bottomNav.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.mainMap -> replaceFragment(mainMapFragment)
-                R.id.notifications -> replaceFragment(notificationsFragment)
-                R.id.settings -> replaceFragment(settingsFragment)
-            }
-            true
+        val buttonNotifications: Button = findViewById(R.id.round_button_notifications)
+        val mImage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getDrawable(R.drawable.notifications_icon)
+        } else {
+            TODO()
         }
-
-        val button: Button = findViewById(R.id.round_button_notifications)
-        button.setOnClickListener {
+        buttonNotifications.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
+        buttonNotifications.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }
@@ -105,15 +85,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    //bottom navBar
-    private  fun replaceFragment(fragment: Fragment){
-        if (fragment != null) {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, fragment)
-            transaction.commitNow()
-        }
-    }
-
     private fun viewToBitmap(view : View): Bitmap {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
@@ -122,7 +93,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         view.draw(canvas)
         return bitmap
     }
-
 
     inner class RefreshThread : Thread() {
         private val mHandler = Handler()
