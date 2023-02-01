@@ -1,6 +1,5 @@
 package hr.foi.air.car2car
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -10,28 +9,17 @@ import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
-
 import android.view.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.hivemq.client.mqtt.MqttClient
-import com.hivemq.client.mqtt.MqttGlobalPublishFilter
-import java.nio.charset.StandardCharsets.UTF_8
 import com.google.android.gms.maps.model.Marker
-import fragments.MainMapFragment
-import fragments.NotificationsFragment
-import fragments.SettingsFragment
 import hr.foi.air.car2car.MQTT.MqttConnectionImpl
 import hr.foi.air.car2car.Notifications.NotificationActivity
 import hr.foi.air.car2car.Notifications.NotificationViewModel

@@ -26,6 +26,18 @@ class NotificationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
 
+        val buttonNotifications: Button = findViewById(R.id.round_button_notifications)
+        val mImage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getDrawable(R.drawable.map_icon)
+        } else {
+            TODO()
+        }
+        buttonNotifications.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
+        buttonNotifications.setOnClickListener {
+            val intent = Intent(this, MainMapActivity::class.java)
+            startActivity(intent)
+        }
+
         // getting the recyclerview by its id
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         // this creates a vertical layout Manager

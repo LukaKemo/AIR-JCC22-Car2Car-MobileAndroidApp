@@ -19,18 +19,4 @@
         android:textSize="16sp"
         android:paddingTop="16dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Rights Information"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingTop="16dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="This project is open source and available on Github for educational purposes. Feel free to use and contribute to the project."
-        android:textSize="16sp"
-        android:paddingTop="16dp" />
 </LinearLayout>
