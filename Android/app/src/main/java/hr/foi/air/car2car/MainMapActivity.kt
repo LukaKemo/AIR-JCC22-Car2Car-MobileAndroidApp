@@ -1,8 +1,10 @@
 package hr.foi.air.car2car
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -10,19 +12,23 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 
+import android.view.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.MqttGlobalPublishFilter
+import java.nio.charset.StandardCharsets.UTF_8
 import com.google.android.gms.maps.model.Marker
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import fragments.MainMapFragment
 import fragments.NotificationsFragment
 import fragments.SettingsFragment
@@ -32,20 +38,15 @@ import hr.foi.air.car2car.Notifications.NotificationViewModel
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
-
     private lateinit var appMap : GoogleMap
     var cars = HashMap<Int, Car>()
-
     private var markers = mutableListOf<Marker>()
     lateinit var mRefreshThread: RefreshThread
     private lateinit var viewModel: MqttViewModel
     private var mqttConnection: MqttConnectionImpl? = null
     private val mapManager = MapHandler()
     private val mqttData = MutableLiveData<ArrayList<NotificationViewModel>>()
-    private val mainMapFragment = MainMapFragment()
-    private val settingsFragment = SettingsFragment()
-    private val notificationsFragment = NotificationsFragment()
-    private lateinit var bottomNav : BottomNavigationView
+
     private val viewModelStoreOwner = MainViewModelStoreOwner()
 
 
@@ -54,25 +55,23 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
     var button: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_map)
+        mqttConnection?.connectToMqtt(cars)
+        mapManager.setupMap(this)
 
-        replaceFragment(mainMapFragment)
-        bottomNav = findViewById(R.id.bottomNav)
+        //Action About buttton
+        val intentAbout = Intent(this, AboutActivity::class.java)
 
-        bottomNav.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.mainMap -> replaceFragment(mainMapFragment)
-                R.id.notifications -> replaceFragment(notificationsFragment)
-                R.id.settings -> replaceFragment(settingsFragment)
-            }
-            true
+        //Main notification button
+        val buttonNotifications: Button = findViewById(R.id.round_button_notifications)
+        val mImage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getDrawable(R.drawable.notifications_icon)
+        } else {
+            TODO()
         }
-
-
-        val button: Button = findViewById(R.id.round_button_notifications)
-        button.setOnClickListener {
+        buttonNotifications.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
+        buttonNotifications.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }
@@ -87,6 +86,25 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mqttConnection = newConnection
         mapManager.setupMap(this)
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.about -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                return true
+            }
+            R.id.settings -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                return true
+            }
+            else -> {return super.onOptionsItemSelected(item)}
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.secondary_navigation, menu);
+        return true
     }
 
     override fun onDestroy() {
@@ -120,15 +138,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    //bottom navBar
-    private  fun replaceFragment(fragment: Fragment){
-        if (fragment != null) {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, fragment)
-            transaction.commitNow()
-        }
-    }
-
     private fun viewToBitmap(view : View): Bitmap {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
@@ -137,7 +146,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         view.draw(canvas)
         return bitmap
     }
-
 
     inner class RefreshThread : Thread() {
         private val mHandler = Handler()
@@ -153,7 +161,6 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             }
-
 
         }
         fun setMapIsBeingScrolled(mapIsBeingScrolled: Boolean) {

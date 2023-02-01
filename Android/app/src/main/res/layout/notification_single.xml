@@ -17,14 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
-
-        <ImageView
-            android:id="@+id/imageview"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:src="@drawable/notifications_icon"
-            tools:layout_editor_absoluteX="5dp" />
     </LinearLayout>
 
     <TextView

@@ -23,7 +23,6 @@ class AdapterForNotifications (private var logList: List<NotificationViewModel>)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = logList[position]
         // sets the image to the ImageView from our itemHolder class
-        holder.imageView.setImageResource(notification.image)
         // sets the text to the TextView from our itemHolder class
         holder.textView.text = notification.text
     }
@@ -44,7 +43,6 @@ class AdapterForNotifications (private var logList: List<NotificationViewModel>)
 
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.imageview)
         val textView: TextView = itemView.findViewById(R.id.textView)
     }
 }

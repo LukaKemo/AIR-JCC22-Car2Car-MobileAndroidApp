@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.preference:preference:1.2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
@@ -53,5 +54,8 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.4'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation 'com.hivemq:hivemq-mqtt-client:1.2.1'
-    //NavBar
+    //Gradle
+    def lifecycle_version = "2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 }
