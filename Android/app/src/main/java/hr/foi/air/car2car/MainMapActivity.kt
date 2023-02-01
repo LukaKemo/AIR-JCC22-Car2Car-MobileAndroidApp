@@ -1,5 +1,6 @@
 package hr.foi.air.car2car
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -7,9 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -27,7 +26,6 @@ import com.google.android.gms.maps.model.Marker
 import hr.foi.air.car2car.MQTT.MqttConnectionImpl
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
-
     private lateinit var appMap : GoogleMap
     var cars = HashMap<Int, Car>()
     private var markers = mutableListOf<Marker>()
@@ -41,6 +39,10 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mqttConnection.connectToMqtt(cars)
         mapManager.setupMap(this)
 
+        //Action About buttton
+        val intentAbout = Intent(this, AboutActivity::class.java)
+
+        //Main notification button
         val buttonNotifications: Button = findViewById(R.id.round_button_notifications)
         val mImage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getDrawable(R.drawable.notifications_icon)
@@ -49,9 +51,28 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         buttonNotifications.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
         buttonNotifications.setOnClickListener {
-            val intent = Intent(this, NotificationActivity::class.java)
-            startActivity(intent)
+            val intentNotifications = Intent(this, NotificationActivity::class.java)
+            startActivity(intentNotifications)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.about -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                return true
+            }
+            R.id.settings -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                return true
+            }
+            else -> {return super.onOptionsItemSelected(item)}
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.secondary_navigation, menu);
+        return true
     }
 
     override fun onDestroy() {
