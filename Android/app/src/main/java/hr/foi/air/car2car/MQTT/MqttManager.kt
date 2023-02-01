@@ -1,17 +1,25 @@
 package hr.foi.air.car2car.MQTT
 
+
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import hr.foi.air.car2car.Car
+import hr.foi.air.car2car.Notifications.NotificationViewModel
+import hr.foi.air.car2car.R
+import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import hr.foi.air.car2car.MqttViewModel
+
 
 import java.nio.charset.StandardCharsets.UTF_8
 
-class MqttConnectionImpl(private val cars : HashMap<Int, Car>): MqttConnection {
+class MqttConnectionImpl(): MqttConnection {
     private val host = "e5c6690c23234ff8b2e11e59d3fb82be.s2.eu.hivemq.cloud"
     private val username = "JCC_RC_CommunicationFramework"
     private val password = "@B1EfbPKD%Pp%kPG"
+    private lateinit var viewModel: MqttViewModel
 
 
     override fun connectToMqtt(cars: HashMap<Int,Car>) {
@@ -31,7 +39,7 @@ class MqttConnectionImpl(private val cars : HashMap<Int, Car>): MqttConnection {
         Log.d("mqtt", "Connected successfully to client")
 
         client.subscribeWith()
-            .topicFilter("LOCATION/#")
+            .topicFilter("#")
             .send()
 
         client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish ->
@@ -39,7 +47,8 @@ class MqttConnectionImpl(private val cars : HashMap<Int, Car>): MqttConnection {
                 "MQTT received message",
                 "Received message: ${publish.topic} -> ${UTF_8.decode(publish.payload.get())}"
             )
-
+            viewModel = MqttViewModel.getInstance()
+            val mqttData = viewModel.data
             val topicParts = publish.topic.toString().split("/")
             if (topicParts[0] == "LOCATION" && topicParts[1].toIntOrNull() != null) {
                 val carInfo = UTF_8.decode(publish.payload.get()).split(',')
@@ -54,11 +63,21 @@ class MqttConnectionImpl(private val cars : HashMap<Int, Car>): MqttConnection {
                     Log.d("CARS", "Updated car $id current position:$lat,$lng")
                 }
             }
+            else if (topicParts[0] == "NOTIFICATION") {
+                val msg = UTF_8.decode(publish.payload.get())
+
+                val currentNotifications = mqttData.value ?: ArrayList()
+                currentNotifications.add(NotificationViewModel(R.drawable.notifications_icon, "NOTIFICATION:$msg"))
+                mqttData.postValue(currentNotifications)
         }
+            Log.d("DATA",mqttData.toString())
+    }
 
         client.publishWith()
-            .topic("Notification/ADMIN")
+            .topic("NOTIFICATION/ADMIN")
             .payload(UTF_8.encode("Admin monitor connected!"))
             .send()
     }
+
+
 }

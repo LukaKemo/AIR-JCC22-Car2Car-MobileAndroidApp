@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NotificationActivity">
+    tools:context=".Notifications.NotificationActivity">
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".NotificationActivity">
+        tools:context=".Notifications.NotificationActivity">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
@@ -20,20 +20,4 @@
             tools:itemCount="5">
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
-    <Button
-        android:id = "@+id/round_button_notifications"
-        android:gravity="center"
-        android:textAlignment = "center"
-        android:text="Main Map"
-        android:background = "@drawable/round_button_notifications"
-        android:layout_width="match_parent"
-        android:layout_height = "wrap_content"
-        android:textColor = "@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

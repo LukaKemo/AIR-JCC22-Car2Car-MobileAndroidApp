@@ -41,15 +41,7 @@
         app:layout_constraintStart_toEndOf="@+id/notifications_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/button_delete"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="#a70000"
-        android:src="@drawable/trash"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <!--</LinearLayout>-->
 
