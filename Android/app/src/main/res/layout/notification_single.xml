@@ -16,25 +16,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        android:orientation="horizontal">
     </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:text="Item"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/notifications_icon"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
-    <!--</LinearLayout>-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
