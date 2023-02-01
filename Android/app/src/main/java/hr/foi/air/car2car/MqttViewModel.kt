@@ -15,6 +15,7 @@ class MqttViewModel private constructor(): ViewModel() {
             }
     }
     val data = MutableLiveData<ArrayList<NotificationViewModel>>()
+    var connected = false
 }
 
 

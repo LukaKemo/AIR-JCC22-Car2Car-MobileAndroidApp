@@ -73,7 +73,10 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         newConnection.connectToMqtt(cars)
         mqttConnection = newConnection
         mapManager.setupMap(this)
-
+        if (!viewModel.connected) {
+            mqttConnection!!.sendConnectedMessage()
+            viewModel.connected = true
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -83,7 +86,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 return true
             }
             R.id.settings -> {
-                startActivity(Intent(this, AboutActivity::class.java))
+                startActivity(Intent(this, SettingsActivity::class.java))
                 return true
             }
             else -> {return super.onOptionsItemSelected(item)}

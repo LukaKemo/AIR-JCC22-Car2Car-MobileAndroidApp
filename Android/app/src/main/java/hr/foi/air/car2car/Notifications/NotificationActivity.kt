@@ -9,11 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import hr.foi.air.car2car.AboutActivity
 import hr.foi.air.car2car.MainMapActivity
 import hr.foi.air.car2car.MqttViewModel
 import hr.foi.air.car2car.R
@@ -53,7 +56,18 @@ class NotificationActivity : AppCompatActivity() {
             adapter.updateData(it)
         })
     }
-}
 
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+        TODO()
+        else -> {return super.onOptionsItemSelected(item)}
+    }
+}*/
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.notifications_navigation, menu);
+    return true
+    }
+}
 
 

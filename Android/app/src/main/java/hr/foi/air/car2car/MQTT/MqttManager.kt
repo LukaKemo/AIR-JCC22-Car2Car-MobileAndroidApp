@@ -22,7 +22,7 @@ class MqttConnectionImpl(): MqttConnection {
     private lateinit var viewModel: MqttViewModel
 
 
-    override fun connectToMqtt(cars: HashMap<Int,Car>) {
+    override fun connectToMqtt(cars: HashMap<Int, Car>) {
         val client = MqttClient.builder()
             .useMqttVersion5()
             .serverHost(host)
@@ -62,22 +62,39 @@ class MqttConnectionImpl(): MqttConnection {
                     cars[id]?.updateLocation(LatLng(lat, lng))
                     Log.d("CARS", "Updated car $id current position:$lat,$lng")
                 }
-            }
-            else if (topicParts[0] == "NOTIFICATION") {
+            } else if (topicParts[0] == "NOTIFICATION") {
                 val msg = UTF_8.decode(publish.payload.get())
 
                 val currentNotifications = mqttData.value ?: ArrayList()
-                currentNotifications.add(NotificationViewModel(R.drawable.notifications_icon, "NOTIFICATION:$msg"))
+                currentNotifications.add(
+                    NotificationViewModel(
+                        R.drawable.notifications_icon,
+                        "NOTIFICATION:$msg"
+                    )
+                )
                 mqttData.postValue(currentNotifications)
+            }
+            Log.d("DATA", mqttData.toString())
         }
-            Log.d("DATA",mqttData.toString())
     }
+        fun sendConnectedMessage() {
+            val client = MqttClient.builder()
+                .useMqttVersion5()
+                .serverHost(host)
+                .serverPort(8883)
+                .sslWithDefaultConfig()
+                .buildBlocking()
 
-        client.publishWith()
-            .topic("NOTIFICATION/ADMIN")
-            .payload(UTF_8.encode("Admin monitor connected!"))
-            .send()
+            client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(UTF_8.encode(password))
+                .applySimpleAuth()
+                .send()
+
+            client.publishWith()
+                .topic("NOTIFICATION/ADMIN")
+                .payload(UTF_8.encode("Admin monitor connected!"))
+                .send()
+        }
     }
-
-
-}
