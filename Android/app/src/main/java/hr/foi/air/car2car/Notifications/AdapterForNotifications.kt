@@ -27,12 +27,10 @@ class AdapterForNotifications (private var logList: List<NotificationViewModel>)
         holder.textView.text = notification.text
     }
 
-
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return logList.size
     }
-
 
     fun updateData(it: ArrayList<NotificationViewModel>?, filter: String) {
         if (it != null) {

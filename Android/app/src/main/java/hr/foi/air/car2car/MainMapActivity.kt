@@ -26,18 +26,12 @@ import hr.foi.air.car2car.Notifications.NotificationViewModel
 import java.util.concurrent.ConcurrentHashMap
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
-
     private lateinit var appMap : GoogleMap
-
     private var markers = mutableListOf<Marker>()
     lateinit var mRefreshThread: RefreshThread
     private lateinit var viewModel: MqttViewModel
     private var mqttConnection: MqttConnectionImpl? = null
     private val mapManager = MapHandler()
-
-
-
-    var button: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,6 +120,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
     fun clearMarkers(){
         markers.forEach { marker ->
             marker.remove()

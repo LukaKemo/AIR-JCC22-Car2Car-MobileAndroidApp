@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import hr.foi.air.car2car.Notifications.NotificationActivity
 
 class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)

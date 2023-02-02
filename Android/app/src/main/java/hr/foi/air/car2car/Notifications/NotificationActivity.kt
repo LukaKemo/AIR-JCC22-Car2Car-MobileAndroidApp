@@ -21,6 +21,7 @@ class NotificationActivity : AppCompatActivity() {
     private lateinit var viewModel: MqttViewModel
     private val adapter = AdapterForNotifications(ArrayList())
     private var currentFilter: String = "NOTIFICATION"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
@@ -69,7 +70,6 @@ class NotificationActivity : AppCompatActivity() {
         adapter.updateData(viewModel.data.value, currentFilter)
         return true
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.notifications_navigation, menu);

@@ -22,7 +22,6 @@ class MqttConnectionImpl(): MqttConnection {
     private val password = "@B1EfbPKD%Pp%kPG"
     private lateinit var viewModel: MqttViewModel
 
-
     override fun connectToMqtt(cars: ConcurrentHashMap<Int, Car>) {
         val client = MqttClient.builder()
             .useMqttVersion5()
@@ -103,7 +102,8 @@ class MqttConnectionImpl(): MqttConnection {
         }
 
     }
-        fun sendConnectedMessage() {
+
+    fun sendConnectedMessage() {
             val client = MqttClient.builder()
                 .useMqttVersion5()
                 .serverHost(host)

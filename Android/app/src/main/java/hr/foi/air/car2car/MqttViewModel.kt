@@ -20,7 +20,6 @@ class MqttViewModel private constructor(): ViewModel() {
     var cars = ConcurrentHashMap<Int, Car>()
 }
 
-
 class MainViewModelStoreOwner : ViewModelStoreOwner {
     private val viewModelStore = ViewModelStore()
 
