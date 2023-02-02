@@ -7,4 +7,7 @@
     <string name="cluste_username">TO-ENTER</string>
     <string name="cluster_password">TO-ENTER</string>
     <string name="notifications">!</string>
+    <string name="resetButton">Reset current car markers</string>
+
+
 </resources>

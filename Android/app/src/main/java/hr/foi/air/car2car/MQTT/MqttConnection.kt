@@ -1,9 +1,9 @@
 package hr.foi.air.car2car.MQTT
 
-import androidx.lifecycle.MutableLiveData
+
 import hr.foi.air.car2car.Car
-import hr.foi.air.car2car.Notifications.NotificationViewModel
+import java.util.concurrent.ConcurrentHashMap
 
 interface MqttConnection {
-    fun connectToMqtt(cars : HashMap<Int, Car>)
+    fun connectToMqtt(cars : ConcurrentHashMap<Int, Car>)
 }

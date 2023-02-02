@@ -12,11 +12,12 @@ class MapHandler() : OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var appMap: GoogleMap
     private lateinit var mainActivity: MainMapActivity
-
+    private lateinit var viewModel: MqttViewModel
 
     override fun onMapReady(googleMap: GoogleMap) {
         appMap = googleMap
-        val firstCar = mainActivity.cars.values.firstOrNull()
+        viewModel = MqttViewModel.getInstance()
+        val firstCar = viewModel.cars.values.firstOrNull()
         if (firstCar != null) {
             val latLongFirstCar = firstCar.location
             appMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLongFirstCar, 16f))

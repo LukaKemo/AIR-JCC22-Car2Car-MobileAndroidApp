@@ -14,6 +14,7 @@ import hr.foi.air.car2car.MqttViewModel
 
 
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.concurrent.ConcurrentHashMap
 
 class MqttConnectionImpl(): MqttConnection {
     private val host = "e5c6690c23234ff8b2e11e59d3fb82be.s2.eu.hivemq.cloud"
@@ -22,7 +23,7 @@ class MqttConnectionImpl(): MqttConnection {
     private lateinit var viewModel: MqttViewModel
 
 
-    override fun connectToMqtt(cars: HashMap<Int, Car>) {
+    override fun connectToMqtt(cars: ConcurrentHashMap<Int, Car>) {
         val client = MqttClient.builder()
             .useMqttVersion5()
             .serverHost(host)
@@ -47,35 +48,60 @@ class MqttConnectionImpl(): MqttConnection {
                 "MQTT received message",
                 "Received message: ${publish.topic} -> ${UTF_8.decode(publish.payload.get())}"
             )
+
             viewModel = MqttViewModel.getInstance()
             val mqttData = viewModel.data
             val topicParts = publish.topic.toString().split("/")
-            if (topicParts[0] == "LOCATION" && topicParts[1].toIntOrNull() != null) {
-                val carInfo = UTF_8.decode(publish.payload.get()).split(',')
-                val id = topicParts[1].toInt()
-                val lat = carInfo[1].toDouble()
-                val lng = carInfo[2].toDouble()
-                if (!cars.containsKey(id)) {
-                    cars[id] = Car(id, lat, lng)
-                    Log.d("CARS", "Created new car $carInfo")
-                } else {
-                    cars[id]?.updateLocation(LatLng(lat, lng))
-                    Log.d("CARS", "Updated car $id current position:$lat,$lng")
-                }
-            } else if (topicParts[0] == "NOTIFICATION") {
-                val msg = UTF_8.decode(publish.payload.get())
+            val msg = UTF_8.decode(publish.payload.get())
 
-                val currentNotifications = mqttData.value ?: ArrayList()
-                currentNotifications.add(
-                    NotificationViewModel(
-                        R.drawable.notifications_icon,
-                        "NOTIFICATION:$msg"
+            when {
+                topicParts[0] == "LOCATION" && topicParts[1].toIntOrNull() != null -> {
+                    val carInfo = msg.split(',')
+                    val id = topicParts[1].toInt()
+                    val lat = carInfo[1].toDouble()
+                    val lng = carInfo[2].toDouble()
+
+                    if (!cars.containsKey(id)) {
+                        cars[id] = Car(id, lat, lng)
+                        Log.d("CARS", "Created new car $carInfo")
+                    } else {
+                        cars[id]?.updateLocation(LatLng(lat, lng))
+                        Log.d("CARS", "Updated car $id current position:$lat,$lng")
+                    }
+                    val currentNotifications = mqttData.value ?: ArrayList()
+                    currentNotifications.add(
+                        NotificationViewModel(
+                            R.drawable.notifications_icon,
+                            "LOCATION:$msg"
+                        )
                     )
-                )
-                mqttData.postValue(currentNotifications)
+                    mqttData.postValue(currentNotifications)
+                }
+                topicParts[0] == "NOTIFICATION" -> {
+                    val currentNotifications = mqttData.value ?: ArrayList()
+                    currentNotifications.add(
+                        NotificationViewModel(
+                            R.drawable.notifications_icon,
+                            "NOTIFICATION:$msg"
+                        )
+                    )
+                    mqttData.postValue(currentNotifications)
+                }
+                topicParts[0] == "DANGER" -> {
+                    val currentNotifications = mqttData.value ?: ArrayList()
+                    currentNotifications.add(
+                        NotificationViewModel(
+                            R.drawable.notifications_icon,
+                            "DANGER:$msg"
+                        )
+                    )
+                    mqttData.postValue(currentNotifications)
+                }
             }
+
             Log.d("DATA", mqttData.toString())
         }
+
     }
         fun sendConnectedMessage() {
             val client = MqttClient.builder()

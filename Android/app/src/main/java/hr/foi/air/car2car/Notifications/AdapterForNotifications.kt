@@ -1,12 +1,12 @@
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import hr.foi.air.car2car.Notifications.NotificationViewModel
 import hr.foi.air.car2car.R
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 class AdapterForNotifications (private var logList: List<NotificationViewModel>) : RecyclerView.Adapter<AdapterForNotifications.ViewHolder>() {
 
@@ -34,9 +34,42 @@ class AdapterForNotifications (private var logList: List<NotificationViewModel>)
     }
 
 
-    fun updateData(it: ArrayList<NotificationViewModel>?) {
+    fun updateData(it: ArrayList<NotificationViewModel>?, filter: String) {
         if (it != null) {
-            logList = it.asReversed()
+            when (filter){
+                "NOTIFICATION"-> {
+                    val filteredList = it.filter { notification ->
+                        notification.text.startsWith("NOTIFICATION:")
+                    }
+                    val sortedList = filteredList.sortedBy { notification ->
+                        notification.text
+                    }
+                    logList = sortedList
+                }
+
+                "DANGER"-> {
+                    val filteredList = it.filter { notification ->
+                            notification.text.startsWith("DANGER:") }
+                    val sortedList = filteredList.sortedBy { notification ->
+                        notification.text }
+                    logList = sortedList
+                }
+
+                "LOCATION"->{
+                    val filteredList = it.filter { notification ->
+                        notification.text.startsWith("LOCATION:")
+                    }
+                    val sortedList = filteredList.sortedBy { notification ->
+                        notification.text
+                    }
+                    logList = sortedList
+                }
+
+                ""->{
+                    logList = it.asReversed()
+                }
+            }
+
             notifyDataSetChanged()
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import hr.foi.air.car2car.Notifications.NotificationViewModel
+import java.util.concurrent.ConcurrentHashMap
 
 class MqttViewModel private constructor(): ViewModel() {
     companion object {
@@ -16,6 +17,7 @@ class MqttViewModel private constructor(): ViewModel() {
     }
     val data = MutableLiveData<ArrayList<NotificationViewModel>>()
     var connected = false
+    var cars = ConcurrentHashMap<Int, Car>()
 }
 
 

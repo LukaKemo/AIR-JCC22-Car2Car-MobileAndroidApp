@@ -23,29 +23,27 @@ import com.google.android.gms.maps.model.Marker
 import hr.foi.air.car2car.MQTT.MqttConnectionImpl
 import hr.foi.air.car2car.Notifications.NotificationActivity
 import hr.foi.air.car2car.Notifications.NotificationViewModel
+import java.util.concurrent.ConcurrentHashMap
 
 class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var appMap : GoogleMap
-    var cars = HashMap<Int, Car>()
+
     private var markers = mutableListOf<Marker>()
     lateinit var mRefreshThread: RefreshThread
     private lateinit var viewModel: MqttViewModel
     private var mqttConnection: MqttConnectionImpl? = null
     private val mapManager = MapHandler()
-    private val mqttData = MutableLiveData<ArrayList<NotificationViewModel>>()
-
-    private val viewModelStoreOwner = MainViewModelStoreOwner()
 
 
-    //private lateinit var googleMap : GoogleMap
-    //private lateinit var client : MqttAndroidClient
+
     var button: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = MqttViewModel.getInstance()
         setContentView(R.layout.activity_main_map)
-        mqttConnection?.connectToMqtt(cars)
+        mqttConnection?.connectToMqtt(viewModel.cars)
         mapManager.setupMap(this)
 
         //Action About buttton
@@ -64,13 +62,13 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
             startActivity(intent)
         }
 
-        viewModel = MqttViewModel.getInstance()
+
         Log.d("TAG", "Hash code Main: " + viewModel.hashCode());
         viewModel.data.observe(this, Observer {
             Log.d("DATA", "Data changed main: ${it.toString()}")
         })
         val newConnection = MqttConnectionImpl()
-        newConnection.connectToMqtt(cars)
+        newConnection.connectToMqtt(viewModel.cars)
         mqttConnection = newConnection
         mapManager.setupMap(this)
         if (!viewModel.connected) {
@@ -107,7 +105,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapManager.onMapReady(googleMap)
     }
 
-    private fun refreshMarkers(cars: HashMap<Int, Car>) {
+    private fun refreshMarkers(cars: ConcurrentHashMap<Int, Car>) {
         appMap = mapManager.getMap()
         markers.forEach { marker ->
             marker.remove()
@@ -128,6 +126,14 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+    fun clearMarkers(){
+        markers.forEach { marker ->
+            marker.remove()
+        }
+        markers.clear()
+        viewModel = MqttViewModel.getInstance()
+        viewModel.cars=ConcurrentHashMap<Int, Car>()
+    }
 
     private fun viewToBitmap(view : View): Bitmap {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -144,7 +150,7 @@ class MainMapActivity : AppCompatActivity(), OnMapReadyCallback {
         override fun run() {
             while (!isInterrupted) {
                 if (!mapIsBeingScrolled){
-                    mHandler.post { refreshMarkers(cars) }
+                    mHandler.post { refreshMarkers(viewModel.cars) }
                     try {
                         sleep(500)
                     } catch (e: InterruptedException) {
