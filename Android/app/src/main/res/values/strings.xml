@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Car2Car</string>
+    <string name="api_key">AIzaSyACH365fTuAniGxd3Vdie4wK_u5eVbcziw</string>
+
+    <string name="cluster_URL">797ecdc6ec274158bfc231c3ddc75ff4.s2.eu.hivemq.cloud</string>
+    <string name="cluste_username">TO-ENTER</string>
+    <string name="cluster_password">TO-ENTER</string>
+    <string name="notifications">!</string>
+</resources>
